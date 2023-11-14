@@ -1,33 +1,38 @@
-let number = 0; //--1
-let data = [];
-const titleArea = document.getElementById("title"); //--2
-const contentArea = document.getElementById("content"); //--2
-const videoArea = document.getElementById("video"); //--2
-const button = document.getElementById("btn"); //--3
+let number = 0;
+const titleArea = document.getElementById("title");
+const contentArea = document.getElementById("content");
+const videoArea = document.getElementById("video");
+const button = document.getElementById("btn");
 
-function getData(callback) {
+let data = [];
+
+function getData() {
+  // 1. generar objeto XMLHttpRequest
   const request = new XMLHttpRequest();
+  // 2. Configurar event handlers en el objeto XMLHttpRequest
   request.onreadystatechange = function () {
-    if (request.readyState == 4 && request.status == 200) {
-      data = JSON.parse(request.responseText);
-      callback();
+    if ((request.readyState = 4)) {
+      if (request.status == 200) {
+        console.log(request.response);
+        data = request.response;
+      }
     }
   };
 
+  // 3. enviar la solicitud
   request.open("GET", "ajax.json");
   request.responseType = "json";
   request.send(null);
 }
 
 function changeVideo() {
-  if (data.length > 0) {
+  getData();
+  button.addEventListener("click", (e) => {
     titleArea.innerHTML = data[number].title;
     contentArea.innerHTML = data[number].content;
     videoArea.setAttribute("src", data[number].url);
-    number == 2 ? (number = 0) : number++;
-  } else {
-    getData(changeVideo);
-  }
+    number === 2 ? (number = 0) : number++;
+  });
 }
 
-window.onload = getData(changeVideo);
+window.onload = changeVideo;
